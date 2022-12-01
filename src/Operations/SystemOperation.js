@@ -1,6 +1,6 @@
 import os from 'os';
 
-class OS {
+class OsOperation {
   EOL() {
     console.log(JSON.stringify(os.EOL));
   };
@@ -28,4 +28,4 @@ class OS {
   };
 };
 
-export default new OS();
+export default new OsOperation();
