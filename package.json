@@ -1,0 +1,20 @@
+{
+  "name": "file_manager",
+  "version": "1.0.0",
+  "description": "File manager for Node.js2022Q4",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akurlovich/File_Manager.git"
+  },
+  "author": "Artsiom",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/akurlovich/File_Manager/issues"
+  },
+  "homepage": "https://github.com/akurlovich/File_Manager#readme"
+}
