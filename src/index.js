@@ -6,6 +6,7 @@ import HashOperation from './Operations/HashOperation.js';
 import NavigationOperation from './Operations/NavigationOperation.js';
 import FilesOperation from './Operations/FilesOperation.js';
 import filesOperationModify from './Operations/FilesOperationModify.js';
+import CompressOperation from './Operations/CompressOperation.js';
 
 const home = os.homedir();
 const navigation = new NavigationOperation(home);
@@ -56,6 +57,7 @@ cli.on('line', (data) => {
   }
   else if (data === 'ls') {
     navigation.ls();
+    // console.log(home);
   }
   else if (data === 'up') {
     navigation.up();
@@ -63,6 +65,7 @@ cli.on('line', (data) => {
   else if (data.startsWith('cd ')) {
     const inputArray = data.split(' ');
     const newPath = inputArray[inputArray.length - 1];
+    console.log(newPath);
     navigation.cd(newPath);
   }
   else if (data.startsWith('hash ')) {
@@ -79,6 +82,14 @@ cli.on('line', (data) => {
     } catch {
       console.log('Invalid input');
     }
+  }
+  else if (data.startsWith('compress ')) {
+    const fileNames = filesOperationModify(data, navigation, CompressOperation);
+    CompressOperation.compress(...fileNames);
+  }
+  else if (data.startsWith('decompress ')) {
+    const fileNames = filesOperationModify(data, navigation, CompressOperation);
+    CompressOperation.decompress(...fileNames);
   }
   else {
     console.log('Invalid input');

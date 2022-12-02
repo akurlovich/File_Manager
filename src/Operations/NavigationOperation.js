@@ -9,18 +9,22 @@ export default class Navigation {
   }
   async ls() {
     try {
+      // console.log(this.path);
       const filesList = await readdir(this.path);
       console.table(filesList);
     } catch (error) {
       console.error('Operation failed');
+      // console.log(this.path);
     }
   }
   async up() {
     if(this.path !== this.homePath) {
       const currentPath = this.path.split(path.sep);
       currentPath.pop();
-      this.path = path.join(path.sep, ...currentPath);
+      // console.log(this.path, currentPath, path.sep);
+      this.path = path.join(path.sep, ...currentPath).slice(1);
     }
+    // console.log(this.path);
     console.log(`Your current path is ${this.path}`);
   }
   async cd(newPath) {
