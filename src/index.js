@@ -3,10 +3,12 @@ import * as readline from 'node:readline';
 import os from 'os';
 import OsOperation from './Operations/SystemOperation.js';
 import HashOperation from './Operations/HashOperation.js';
-import Navigation from './Operations/Navigation.js';
+import NavigationOperation from './Operations/NavigationOperation.js';
+import FilesOperation from './Operations/FilesOperation.js';
+import filesOperationModify from './Operations/FilesOperationModify.js';
 
 const home = os.homedir();
-const navigation = new Navigation(home);
+const navigation = new NavigationOperation(home);
 
 let userName;
 try {
@@ -27,6 +29,30 @@ cli.on('line', (data) => {
   
   if (data === '.exit') {
     cli.close();
+  }
+  else if (data.startsWith('cat ')) {
+    const fileNames = filesOperationModify(data, navigation, FilesOperation);
+    FilesOperation.cat(...fileNames);
+  }
+  else if (data.startsWith('add ')) {
+    const fileNames = filesOperationModify(data, navigation, FilesOperation);
+    FilesOperation.add(...fileNames);
+  }
+  else if (data.startsWith('rn ')) {
+    const fileNames = filesOperationModify(data, navigation, FilesOperation);
+    FilesOperation.rn(...fileNames);
+  }
+  else if (data.startsWith('cp ')) {
+    const fileNames = filesOperationModify(data, navigation, FilesOperation);
+    FilesOperation.cp(...fileNames);
+  }
+  else if (data.startsWith('mv ')) {
+    const fileNames = filesOperationModify(data, navigation, FilesOperation);
+    FilesOperation.mv(...fileNames);
+  }
+  else if (data.startsWith('rm ')) {
+    const fileNames = filesOperationModify(data, navigation, FilesOperation);
+    FilesOperation.rm(...fileNames);
   }
   else if (data === 'ls') {
     navigation.ls();

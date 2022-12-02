@@ -1,6 +1,6 @@
 import path from 'path';
-import fsp from 'fs/promises';
-import { stat } from 'fs/promises'
+import { stat } from 'fs/promises';
+import { readdir } from 'node:fs/promises';
 
 export default class Navigation {
   constructor(homePath) {
@@ -8,8 +8,12 @@ export default class Navigation {
     this.homePath = homePath;
   }
   async ls() {
-    const filesList = await fsp.readdir(this.path);
-    filesList.map((file) => console.log(file));
+    try {
+      const filesList = await readdir(this.path);
+      console.table(filesList);
+    } catch (error) {
+      console.error('Operation failed');
+    }
   }
   async up() {
     if(this.path !== this.homePath) {
