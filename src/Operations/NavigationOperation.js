@@ -20,9 +20,12 @@ export default class Navigation {
   async up() {
     if(this.path !== this.homePath) {
       const currentPath = this.path.split(path.sep);
+      // console.log(currentPath)
       currentPath.pop();
+      // console.log(currentPath)
       // console.log(this.path, currentPath, path.sep);
-      this.path = path.join(path.sep, ...currentPath).slice(1);
+      this.path = currentPath.join(path.sep);
+      // this.path = path.join(path.sep, ...currentPath).slice(1);
     }
     // console.log(this.path);
     console.log(`Your current path is ${this.path}`);
