@@ -2,6 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import { stdout } from 'process';
 import { createHash } from 'crypto';
+import { OPERATION_ERROR } from '../Constants/constants.js';
 
 class HashOperation {
   constructor() {
@@ -21,14 +22,14 @@ class HashOperation {
       }
       const stream = fs.createReadStream(pathToFile);     
       stream
-        .on('error', () => console.log('Operation failed'))
+        .on('error', () => console.log(OPERATION_ERROR))
         .pipe(hash)
-        .on('error', () => console.log('Operation failed'))
+        .on('error', () => console.log(OPERATION_ERROR))
         .pipe(stdout)
-        .on('error', () => console.log('Operation failed'));
+        .on('error', () => console.log(OPERATION_ERROR));
       stream.on('end', () => process.stdout.write('\n'));
     } catch {
-      console.log('Operation failed');
+      console.log(OPERATION_ERROR);
     }
   };
 };

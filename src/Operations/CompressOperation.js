@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { pipeline } from 'stream';
+import { OPERATION_ERROR } from '../Constants/constants.js';
 
 class CompressOperation {
   constructor() {
@@ -24,41 +25,41 @@ class CompressOperation {
         this.pathToDestination = destination;
       }
     } catch {
-      console.log('Operation failed');
+      console.log(OPERATION_ERROR);
     }
   }
   archive(src, destination, archiveProcess) {
     this.setPathsToFiles(src, destination);
     try {
-      const britoliCompressStream = archiveProcess();
+      const compressStream = archiveProcess();
       const srcStream = fs.createReadStream(this.pathToSrc);
       const destinationStream = fs.createWriteStream(this.pathToDestination);
       pipeline(
         srcStream,
-        britoliCompressStream,
+        compressStream,
         destinationStream,
         (err) => {
           if (err) {
-            console.log('Operation failed');
+            console.log(OPERATION_ERROR);
           }
         }
       )
     } catch {
-      console.log('Operation failed');
+      console.log(OPERATION_ERROR);
     }
   }
   compress(src, destination) {
     if (src && destination) {
       this.archive(src, destination, BrotliCompress);
     } else {
-      console.log('Operation failed');
+      console.log(OPERATION_ERROR);
     }
   }
   decompress(src, destination) {
     if (src && destination) {
       this.archive(src, destination, BrotliDecompress);
     } else {
-      console.log('Operation failed');
+      console.log(OPERATION_ERROR);
     }
   }
 };

@@ -3,106 +3,83 @@ import fs from 'fs';
 import fsp from 'fs/promises';
 import { stat } from 'fs/promises';
 import { pipeline } from 'stream';
+import { OPERATION_ERROR } from '../Constants/constants.js';
 
 class Files {
   constructor() {
     this.pathToDir = '';
   }
+
   setPath(currentPath) {
     this.pathToDir = currentPath;
   }
+
   async cat(fileName) {
     const pathToFile = path.join(this.pathToDir, fileName);
+
     try {
-      const stats = await stat(pathToFile);
-      if (stats.isFile()) {
-        const stream = fs.createReadStream(pathToFile);
+      if (fs.existsSync(pathToFile)) {
+        const stream = fs.createReadStream(pathToFile, 'utf8');
         stream.pipe(process.stdout);
         stream.on('end', () => process.stdout.write('\n'));
       } else {
-        throw new Error();
+        throw new Error(OPERATION_ERROR);
       }
     } catch {
-      console.log('Operation failed');
+      console.log(OPERATION_ERROR);
     }
-  }
+  };
+
   async add(fileName) {
     const pathToFile = path.join(this.pathToDir, fileName);
-    console.log(pathToFile)
+    
     try {
-      await stat(pathToFile);
-      console.log('Operation failed');
-    } catch {
-      try {
-        const stream = fs.createWriteStream(pathToFile);
-        stream.write('');
-      } catch {
-        console.log('Operation failed');
+      if (fs.existsSync(pathToFile)) {
+        throw new Error(OPERATION_ERROR);
+      } else {
+        fs.writeFileSync(pathToFile, '');
+        console.log(`File ${pathToFile} created!`);
       }
-    }
-  }
-  async rn(pathToFile = '', newFilename = '', errMessage = 'Operation failed') {
-    let src;
-    let destination;
-    if (!path.isAbsolute(pathToFile)) {
-      src = path.join(this.pathToDir, pathToFile);
-      destination = path.join(this.pathToDir, newFilename);
-    } else {
-      const pathToDir = pathToFile.split(path.sep);
-      pathToDir.pop();
-      src = pathToFile;
-      destination = path.join(path.sep, ...pathToDir, newFilename);
-    }
-    try {
-      await fsp.access(destination);
-      throw new Error('File exist')
     } catch (err) {
-      if (err.message !== 'File exist') {
-        try {
-          await fsp.access(src);
-          const srcStream = fs.createReadStream(src);
-          const destinationStream = fs.createWriteStream(destination);
-          pipeline(
-            srcStream,
-            destinationStream,
-            (err) => {
-              if (err) {
-                console.log(errMessage);
-              }
-            }
-          )
-          srcStream.on('end', async () => fs.rm(src, err => {
-            if (err) console.log(errMessage);
-          }));
-        } catch {
-          console.log(errMessage);
-        }
-      } else {
-        console.log(errMessage);
-      }
-    }
-  }
+      console.error(OPERATION_ERROR);
+    };
+  };
 
-  async rm(pathToFile) {
-    let src;
-    if (!path.isAbsolute(pathToFile)) {
-      src = path.join(this.pathToDir, pathToFile);
-    } else {
-      src = pathToFile;
-    }
+  async rn(pathToFile = '', newFilename = '') {
+    const oldPathToFile = path.join(this.pathToDir, pathToFile);
+    const newPathToFile = path.join(this.pathToDir, newFilename);
+
     try {
-      const stats = await stat(src);
-      if (stats.isFile()) {
-        await fsp.rm(src);
-        console.log(`File ${src} was removed`)
+      if (fs.existsSync(oldPathToFile) && !fs.existsSync(newPathToFile)) {
+        fs.renameSync(oldPathToFile, newPathToFile);
+        console.log(`File ${oldPathToFile} renamed to ${newPathToFile}`);
       } else {
-        throw new Error();
+        throw new Error(OPERATION_ERROR);
+    
       }
-    } catch {
-      console.log('Operation failed');
-    }
-  }
-  async cp(pathToFile, newPathToDir, errMessage = 'Operation failed') {
+    } catch (err) {
+      console.error(OPERATION_ERROR);
+    };
+  };
+
+  async rm(fileName) {
+    const pathToFile = path.join(this.pathToDir, fileName);
+    console.log(pathToFile);
+
+    try {
+      if (fs.existsSync(pathToFile)) {
+        fs.rmSync(pathToFile);
+        console.log(`File ${pathToFile} was removed!`);
+      } else {
+        throw new Error(OPERATION_ERROR);
+    
+      }
+    } catch (err) {
+      console.error(OPERATION_ERROR);
+    };
+  };
+
+  async cp(pathToFile, newPathToDir, errMessage = OPERATION_ERROR) {
     let src;
     let fileName;
     let destination;
@@ -162,7 +139,7 @@ class Files {
   async mv(pathToFile, newPathToDir) {  
       const src = await this.cp(pathToFile, newPathToDir, '');
       fs.rm(src, err => {
-        if (err) console.log('Operation failed');
+        if (err) console.log(OPERATION_ERROR);
       });  
   }
 };
