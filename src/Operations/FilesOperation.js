@@ -1,7 +1,6 @@
 import path from 'path';
 import fs from 'fs';
 import fsp from 'fs/promises';
-import { stat } from 'fs/promises';
 import { pipeline } from 'stream';
 import { OPERATION_ERROR } from '../Constants/constants.js';
 
@@ -64,7 +63,6 @@ class Files {
 
   async rm(fileName) {
     const pathToFile = path.join(this.pathToDir, fileName);
-    console.log(pathToFile);
 
     try {
       if (fs.existsSync(pathToFile)) {
@@ -79,7 +77,7 @@ class Files {
     };
   };
 
-  async cp(pathToFile, newPathToDir, errMessage = OPERATION_ERROR) {
+  async cp(pathToFile, newPathToDir) {
     let src;
     let fileName;
     let destination;
@@ -93,6 +91,7 @@ class Files {
       fileName = pathToDir.pop();
       src = pathToFile;
     }
+
     if (!path.isAbsolute(newPathToDir)) {
       destination = path.join(this.pathToDir, newPathToDir, fileName);
       destinationDir = path.join(this.pathToDir, newPathToDir);
@@ -100,6 +99,7 @@ class Files {
       destination = path.join(newPathToDir, fileName);
       destinationDir = newPathToDir;
     }
+
     try {
       await fsp.mkdir(destinationDir, { recursive: true });
       try {
@@ -116,31 +116,35 @@ class Files {
               destinationStream,
               (err) => {
                 if (err) {
-                  console.log(errMessage);
+                  console.log(OPERATION_ERROR);
                   return '';
                 }
               }
             )
           } catch {
-            console.log(errMessage);
+            console.log(OPERATION_ERROR);
             return '';
           }
         } else {
-          console.log(errMessage);
+          console.log(OPERATION_ERRO);
           return '';
         }
       }
     } catch {
-      console.log(errMessage);
+      console.log(OPERATION_ERROR);
       return '';
     }
     return src;
-  }
+
+  };
+
   async mv(pathToFile, newPathToDir) {  
-      const src = await this.cp(pathToFile, newPathToDir, '');
-      fs.rm(src, err => {
-        if (err) console.log(OPERATION_ERROR);
-      });  
+    const src = await this.cp(pathToFile, newPathToDir);
+    fs.rm(src, err => {
+      if (err) {
+        console.log(OPERATION_ERROR);
+      }
+    });  
   }
 };
 
