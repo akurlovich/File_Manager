@@ -1,4 +1,4 @@
-import { argv, stdin as input, stdout as output } from 'process';
+import { argv, stdin, stdout } from 'process';
 import * as readline from 'node:readline';
 import os from 'os';
 import OsOperation from './Operations/SystemOperation.js';
@@ -23,7 +23,7 @@ try {
   userName = 'user_name'
 };
 
-const cli = readline.createInterface({ input, output });
+const cli = readline.createInterface({ input: stdin, output: stdout });
 
 console.log(`Welcome to File Manager, ${userName}!`);
 
@@ -39,12 +39,10 @@ cli.on('line', (data) => {
   }
   else if (data.startsWith('add ')) {
     const fileNames = filesOperationModify(data, NavigationOperation, FilesOperation);
-    // console.log(fileNames);
     FilesOperation.add(...fileNames);
   }
   else if (data.startsWith('rn ')) {
     const fileNames = filesOperationModify(data, NavigationOperation, FilesOperation);
-    console.log(fileNames);
     FilesOperation.rn(...fileNames);
   }
   else if (data.startsWith('cp ')) {
@@ -62,7 +60,6 @@ cli.on('line', (data) => {
   }
   else if (data === 'ls') {
     NavigationOperation.ls();
-    // console.log(home);
   }
   else if (data === 'up') {
     NavigationOperation.up();
@@ -70,7 +67,6 @@ cli.on('line', (data) => {
   else if (data.startsWith('cd ')) {
     const inputArray = data.split(' ');
     const newPath = inputArray[inputArray.length - 1];
-    console.log(newPath);
     NavigationOperation.cd(newPath);
   }
   else if (data.startsWith('hash ')) {
