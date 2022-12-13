@@ -10,27 +10,35 @@ class Navigation {
   };
 
   async ls() {
+    let dataArray = [];
     try {
-      // console.log(this.path);
-      const filesList = await readdir(this.path);
-      console.table(filesList);
+      const filesList = await readdir(this.path, {withFileTypes: true});
+      filesList.sort(
+        (a, b) => a.name.localeCompare(b.name, "en")
+      );
+      for (const file of filesList) {
+        if (file.isDirectory()) {
+          dataArray.push({Name : file.name, Type: 'Directory'});
+        }
+      };
+      for (const file of filesList) {
+        if (file.isFile()) {
+          dataArray.push({Name : file.name, Type: 'File'});
+        };
+        
+      };
+      console.table(dataArray);
     } catch (error) {
       console.error(OPERATION_ERROR);
-      // console.log(this.path);
     }
   };
 
   async up() {
     if(this.path !== this.homePath) {
       const currentPath = this.path.split(path.sep);
-      // console.log(currentPath)
       currentPath.pop();
-      // console.log(currentPath)
-      // console.log(this.path, currentPath, path.sep);
       this.path = currentPath.join(path.sep);
-      // this.path = path.join(path.sep, ...currentPath).slice(1);
     }
-    // console.log(this.path);
     console.log(`Your current path is ${this.path}`);
   };
 

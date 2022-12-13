@@ -1,5 +1,5 @@
 const OPERATION_ERROR = 'Operation failed';
-const INVALID_INPUT = 'Invalid input!'
+const INVALID_INPUT = 'Invalid input!';
 
 export {
   OPERATION_ERROR,

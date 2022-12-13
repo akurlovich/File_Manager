@@ -25,7 +25,7 @@ try {
 
 const cli = readline.createInterface({ input: stdin, output: stdout });
 
-console.log(`Welcome to File Manager, ${userName}!`);
+console.log(`Welcome to the File Manager, ${userName}!`);
 
 cli.on('line', (data) => {
   data = data.trim();
@@ -55,7 +55,6 @@ cli.on('line', (data) => {
   }
   else if (data.startsWith('rm ')) {
     const fileNames = filesOperationModify(data, NavigationOperation, FilesOperation);
-    console.log(fileNames);
     FilesOperation.rm(...fileNames);
   }
   else if (data === 'ls') {
